@@ -1,7 +1,8 @@
 from flask import Flask
 from .config.config import Config
-from .extensions import db, ma
+from .extensions import db, ma, mail
 from .blueprints import register_blueprints
+from flask_cors import CORS
 
 from app.models.address_model import Address
 from app.models.order_item_model import OrderItem
@@ -16,6 +17,9 @@ def create_app():
     
     db.init_app(app)
     ma.init_app(app)
+    mail.init_app(app)
+
+    CORS(app, resources={r"/*": {"origins": "http://localhost:4200"}})
 
     with app.app_context():
         db.create_all()

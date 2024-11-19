@@ -1,7 +1,11 @@
-from flask import jsonify
+import random
+
+from flask import jsonify, request
+from datetime import datetime
 from werkzeug.security import generate_password_hash
 from app.models.user_model import User, db
 from app.schemas.user_schema import UserSchema
+from app.services.email_service import send_email
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
@@ -82,3 +86,52 @@ def delete_user_logic(id):
     except Exception as e:
         db.session.rollback()
         return {"erro": f"Erro ao marcar usuário como excluído: {str(e)}"}, 500
+    
+def request_reset_code_logic():
+    data = request.get_json()
+    email = data.get("email")
+
+    user = User.query.filter_by(email=email, status='A').first()
+
+    if not user:
+        return {"error": "Usuário não encontrado"}, 404
+
+    reset_code = f"{random.randint(100000, 999999)}"
+    user.set_reset_code(reset_code)
+
+    try:
+        db.session.commit()
+        subject = "Código de redefinição de senha - Floricultura Flora Reis"
+        body = f"Seu código de redefinição de senha é: {reset_code}\n\nEste código expira em 15 minutos."
+
+        if send_email(subject, [user.email], body):
+            return {"message": "Código de redefinição enviado para o e-mail"}, 200
+        else:
+            return {"error": "Erro ao enviar e-mail"}, 500
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Erro ao gerar código: {str(e)}"}, 500
+
+def reset_password_logic():
+    data = request.get_json()
+    email = data.get("email")
+    code = data.get("code")
+    new_password = data.get("newPassword")
+
+    user = User.query.filter_by(email=email, status='A').first()
+
+    if not user:
+        return {"error": "Usuário não encontrado"}, 404
+
+    if user.reset_code != code or user.reset_code_expiration < datetime.utcnow():
+        return {"error": "Código inválido ou expirado"}, 400
+
+    user.password = generate_password_hash(new_password)
+    user.clear_reset_code()
+
+    try:
+        db.session.commit()
+        return {"message": "Senha redefinida com sucesso"}, 200
+    except Exception as e:
+        db.session.rollback()
+        return {"error": f"Erro ao redefinir senha: {str(e)}"}, 500

@@ -10,3 +10,6 @@ class UserSchema(Schema):
     date_created = fields.DateTime(dump_only=True)
     date_modifield = fields.DateTime(dump_only=True)
     date_excluded = fields.DateTime(dump_only=True)
+    code = fields.String(required=False, load_only=True)
+    reset_code_expiration = fields.DateTime(dump_only=True)
+    newPassowrd = fields.String(required=False, load_only=True)

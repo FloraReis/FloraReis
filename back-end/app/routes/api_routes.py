@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
-from app.controllers.user_controller import create_user_logic, get_user_logic, get_all_users_logic, update_user_logic, delete_user_logic
+from app.controllers.auth_controller import login_logic
+from app.controllers.user_controller import create_user_logic, get_user_logic, get_all_users_logic, update_user_logic, delete_user_logic, request_reset_code_logic, reset_password_logic
 from app.controllers.person_controller import create_person_logic, get_person_logic, get_all_persons_logic, update_person_logic, delete_person_logic
 from app.controllers.product_controller import create_product_logic, get_product_logic, get_all_products_logic, update_product_logic, delete_product_logic
 from app.controllers.supplier_controller import create_supplier_logic, get_supplier_logic, get_all_suppliers_logic, update_supplier_logic, delete_supplier_logic
@@ -12,8 +13,24 @@ api_bp = Blueprint('api', __name__)
 def home():
     return jsonify({"mensagem": "Bem-vindo a API da Floricultura!"})
 
-@api_bp.route('/api/login', methods=['POST', 'GET'])
-@api_bp.route('/api/login/<int:id>', methods=['GET', 'PUT', 'DELETE'])
+@api_bp.route("/api/auth/login", methods=["POST"])
+def auth_handler():
+    data = request.get_json()
+    response, status = login_logic(data)
+    return jsonify(response), status
+
+@api_bp.route('/api/user/request-reset', methods=['POST'])
+def request_reset():
+    response, status = request_reset_code_logic()
+    return jsonify(response), status
+
+@api_bp.route('/api/user/reset-password', methods=['POST'])
+def reset_password():
+    response, status = reset_password_logic()
+    return jsonify(response), status
+
+@api_bp.route('/api/user', methods=['POST', 'GET'])
+@api_bp.route('/api/user/<int:id>', methods=['GET', 'PUT', 'DELETE'])
 def user_handler(id=None):
     if request.method == 'POST':
         response, status = create_user_logic(request)
