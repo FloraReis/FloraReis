@@ -2,7 +2,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 96vh;
+    min-height: 98vh;
     background-color: #f5f1f5;
     padding: 10px; 
 }
@@ -66,24 +66,24 @@ form {
     box-sizing: border-box;
 }
 
-label {
+p-floatLabel {
+    width: 100%;
+    margin-bottom: 15px;
     color: #556b2f;
-    margin-top: 10px;
+    margin-top: 15px;
     font-size: 0.9em;
     font-weight: bold;
-    width: 100%;
     text-align: left;
-}
 
-input[type="email"], input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    margin-top: 5px;
-    border: 1px solid #cccccc;
-    background-color: #eee;
-    border-radius: 5px;
-    font-size: 14px;
-    box-sizing: border-box;
+    input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #cccccc;
+        background-color: #eee;
+        border-radius: 5px;
+        font-size: 14px;
+        box-sizing: border-box;
+    }
 }
 
 .error-message {
@@ -96,10 +96,10 @@ input[type="email"], input[type="password"] {
     display: flex;
     flex-direction: column;
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
-.login-btn, .signup-btn {
+.login-btn {
     width: 100%;
     background-color: #6a8a52;
     color: #ffffff;
@@ -110,19 +110,30 @@ input[type="email"], input[type="password"] {
     font-size: 14px;
     font-weight: bold;
     transition: background-color 0.3s;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .login-btn:hover {
     background-color: #556b2f;
 }
 
-.signup-btn {
-    background-color: #7b0339;
+a.button-link {
+    display: block;
+    text-align: center;
+    width: 100%;
+    color: #7b0339;
+    padding: 5px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s;
+    margin-bottom: 10px;
 }
 
-.signup-btn:hover {
-    background-color: #470221;
+a.button-link:hover {
+    color: #470221;
 }
 
 @media (max-width: 768px) {
@@ -144,17 +155,8 @@ input[type="email"], input[type="password"] {
         font-size: 1.2em;
     }
 
-    .buttons {
-        width: 100%;
-    }
-
     form {
         max-width: 100%;
         padding: 0 15px;
-    }
-
-    input[type="email"], input[type="password"] {
-        padding: 10px;
-        font-size: 1rem;
     }
 }
