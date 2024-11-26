@@ -24,10 +24,16 @@ def get_stock_logic(id):
         return {"error": "Stock not found"}, 404
     return StockSchema().dump(stock), 200
 
+def get_all_stock_logic():
+    stock = Stock.query.all()
+    return StockSchema(many=True).dump(stock), 200
+
 def update_stock_logic(id, data):
     stock = Stock.query.get(id)
     if not stock:
         return {"error": "Stock not found"}, 404
+    
+    data.pop('id',None)
 
     try:
         updated_data = StockSchema(partial=True).load(data)

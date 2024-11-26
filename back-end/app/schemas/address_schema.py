@@ -7,7 +7,7 @@ class AddressSchema(Schema):
     cidade = fields.Str(required=True)
     estado = fields.Str(required=True)
     cep = fields.Str(required=True)
-    numero = fields.Str(required=False)
+    numero = fields.Str(required=True)
     complemento = fields.Str(required=False)
     date_created = fields.DateTime(dump_only=True)
     date_modified = fields.DateTime(dump_only=True)

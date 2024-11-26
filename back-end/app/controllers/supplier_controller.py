@@ -38,16 +38,22 @@ def get_supplier_logic(id):
     return SupplierSchema().dump(supplier), 200
 
 def get_all_suppliers_logic():
-    suppliers = Supplier.query.all()
+    query = Supplier.query.filter(Supplier.date_excluded.is_(None))
+
+    suppliers = query.all()
     return SupplierSchema(many=True).dump(suppliers), 200
 
 def update_supplier_logic(id, data):
     supplier = Supplier.query.get(id)
+
     if not supplier:
         return {"error": "Supplier not found"}, 404
     
+    data.pop('id', None)
+    
     try:
         updated_data = SupplierSchema(partial=True).load(data)
+        
         if "address" in updated_data:
             address_data = updated_data.pop("address")
             for key, value in address_data.items():

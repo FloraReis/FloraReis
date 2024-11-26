@@ -1,1 +1,281 @@
-<p>person works!</p>
+<div class="auth-wrapper" [ngClass]="{ 'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen }">
+    <div class="auth-container">
+        <h2> Listagem de pessoas </h2>
+            <div class="dynamic-buttons">
+                <button pButton icon="pi pi-eye" class="p-button-primary" (click)="toggleAddressVisibility()"
+                    pTooltip="Exibir/Ocultar Endereço" tooltipPosition="bottom" placeholder="bottom" [rounded]="true" [text]="true" [raised]="true" severity="help">
+                </button>
+                <button pButton icon="pi pi-plus" class="p-button-primary" (click)="openDialog()"
+                    pTooltip="Adicionar Pessoa" tooltipPosition="bottom" placeholder="bottom" [rounded]="true" [text]="true" [raised]="true" severity="warning">
+                </button>
+                <button pButton icon="pi pi-print" class="p-button-primary" [rounded]="true" [text]="true" [raised]="true" (click)="print()" pTooltip="Imprimir"
+                    tooltipPosition="bottom" placeholder="bottom" severity="secondary">
+                </button>
+                <button pButton icon="pi pi-file-excel" class="p-button-primary" (click)="exportToXLSX()" 
+                    pTooltip="Exportar" tooltipPosition="left" placeholder="left" [rounded]="true" [text]="true" [raised]="true" severity="info">
+                </button>
+            </div>
+        
+        <p-toast />
+
+        <p-table [value]="people" [paginator]="true" [rows]="10" responsiveLayout="scroll" [rowsPerPageOptions]="[10, 20]" [autoLayout]="true" 
+            [style]="{'margin-top':'10px'}" dataKey="id" editMode="row">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:10%">Ações</th>
+                    <th style="width:10%">Nome</th>
+                    <th style="width:10%">Email</th>
+                    <th style="width:10%">Telefone</th>
+                    <th style="width:10%">CPF</th>
+                    <th style="width:10%">Data de nascimento</th>
+                    <th style="width:10%">Tipo</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Logradouro</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Número</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Bairro</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Cidade</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Estado</th>
+                    <th *ngIf="showAddressFields" style="width:10%">CEP</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Complemento</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-person let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="person">
+                    <td>
+                        <div class="flex align-items-center justify-content-center gap-2">
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                                (click)="onRowEditInit(person)" class="p-button-rounded p-button-text">
+                            </button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(person)" class="p-button-rounded p-button-text p-button-success mr-2">
+                            </button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(person, ri)" class="p-button-rounded p-button-text p-button-danger">
+                            </button>
+                            <button *ngIf="!editing" pButton pRipple type="button" pDeleteEditableRow icon="pi pi-trash"
+                                (click)="onDelete(person)" class="p-button-rounded p-button-text p-button-danger" >
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.full_name" placeholder="Nome" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.full_name }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.email" placeholder="Email" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.email }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.phone" placeholder="Telefone" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.phone }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.cpf" placeholder="CPF" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.cpf }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.birth_date"
+                                    placeholder="Data de Aniversário" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.birth_date | date:'dd/MM/yyyy' }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-dropdown [options]="types" [(ngModel)]="person.realm"
+                                    placeholder="Selecione um tipo">
+                                </p-dropdown>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.realm === 'C' ? 'Cliente' : 'Funcionário' }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.logradouro"
+                                    placeholder="Logradouro" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.logradouro }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.numero"
+                                    placeholder="Número" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.numero }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.bairro"
+                                    placeholder="Bairro" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.bairro }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.cidade"
+                                    placeholder="Cidade" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.cidade }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.estado"
+                                    placeholder="Estado" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.estado }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.cep" placeholder="CEP" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.cep }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="person.address.complemento"
+                                    placeholder="Complemento" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ person.address?.complemento }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+
+    </div>
+</div>
+
+
+<p-dialog header="CADASTRAR PESSOA" [(visible)]="isDialogOpen" [modal]="true" [closable]="false" [maximizable]="true"
+    [draggable]="false" [resizable]="false">
+    <form>
+        <div class="form-grid">
+            <p-floatLabel>
+                <input id="full_name" type="text" pInputText [(ngModel)]="newPerson.full_name" name="full_name" />
+                <label for="full_name">Nome</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="email" type="email" pInputText [(ngModel)]="newPerson.email" name="email" />
+                <label for="email">Email</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="phone" [(ngModel)]="newPerson.phone" mask="(99) 99999-9999"
+                    placeholder="(XX) XXXXX-XXXX" name="phone" />
+                <label for="phone">Telefone</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="cpf" [(ngModel)]="newPerson.cpf" mask="999.999.999-99" placeholder="XXX.XXX.XXX-XX"
+                    name="cpf" />
+                <label for="cpf">CPF</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="birth_date" [(ngModel)]="newPerson.birth_date" name="birth_date" mask="99/99/9999"
+                    placeholder="dd/mm/yyyy" />
+                <label for="birth_date">Data de Nascimento</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-dropdown id="realm" [(ngModel)]="newPerson.realm" [options]="types" name="realm"
+                    placeholder="Selecione um tipo" [style]="{ width: '100%' }" />
+                <label for="realm">Tipo</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="cep" [(ngModel)]="newPerson.cep" mask="99999-999" placeholder="XXXXX-XXX" name="cep"
+                    (onComplete)="searchAddress()" />
+                <label for="cep">CEP</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="logradouro" type="text" pInputText [(ngModel)]="newPerson.logradouro" name="logradouro" />
+                <label for="logradouro">Logradouro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="numero" type="text" pInputText [(ngModel)]="newPerson.numero" name="numero" />
+                <label for="numero">Número</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="bairro" type="text" pInputText [(ngModel)]="newPerson.bairro" name="bairro" />
+                <label for="bairro">Bairro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="cidade" type="text" pInputText [(ngModel)]="newPerson.cidade" name="cidade" />
+                <label for="cidade">Cidade</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="estado" type="text" pInputText [(ngModel)]="newPerson.estado" name="estado" />
+                <label for="estado">Estado</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="complemento" type="text" pInputText [(ngModel)]="newPerson.complemento" name="complemento" />
+                <label for="complemento">Complemento</label>
+            </p-floatLabel>
+        </div>
+        <div class="dialog-footer">
+            <button pButton icon="pi pi-check" label="Salvar" class="p-button-primary"
+                (click)="createPerson()"></button>
+            <button pButton icon="pi pi-times" label="Cancelar" class="p-button-secondary"
+                (click)="closeDialog()"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s" />
+    <p class="loading-text">Por favor, aguarde. Estamos salvando os dados inseridos.</p>
+</div>

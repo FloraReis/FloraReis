@@ -1,1 +1,293 @@
-<p>suppliers works!</p>
+<div class="auth-wrapper" [ngClass]="{ 'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen }">
+    <div class="auth-container">
+        <h2> Listagem de Fornecedores </h2>
+        <div class="dynamic-buttons">
+            <button pButton icon="pi pi-eye" class="p-button-primary" (click)="toggleAddressVisibility()"
+                pTooltip="Exibir/Ocultar Endereço" tooltipPosition="bottom" [rounded]="true" [text]="true"
+                [raised]="true" severity="help">
+            </button>
+            <button pButton icon="pi pi-plus" class="p-button-primary" (click)="openDialog()"
+                pTooltip="Adicionar Fornecedor" tooltipPosition="bottom" [rounded]="true" [text]="true" [raised]="true"
+                severity="warning">
+            </button>
+            <button pButton icon="pi pi-print" class="p-button-primary" (click)="print()" pTooltip="Imprimir"
+                tooltipPosition="bottom" [rounded]="true" [text]="true" [raised]="true" severity="secondary">
+            </button>
+            <button pButton icon="pi pi-file-excel" class="p-button-primary" (click)="exportToXLSX()"
+                pTooltip="Exportar" tooltipPosition="left" [rounded]="true" [text]="true" [raised]="true"
+                severity="info">
+            </button>
+        </div>
+
+        <p-toast></p-toast>
+
+        <p-table [value]="suppliers" [paginator]="true" [rows]="10" responsiveLayout="scroll"
+            [rowsPerPageOptions]="[10, 20]" [autoLayout]="true" [style]="{'margin-top':'10px'}" dataKey="id"
+            editMode="row">
+            <ng-template pTemplate="header">
+                <tr>
+                    <th style="width:10%">Ações</th>
+                    <th style="width:15%">Nome da Empresa</th>
+                    <th style="width:15%">Tipo da Empresa</th>
+                    <th style="width:15%">CPF/CNPJ</th>
+                    <th style="width:15%">Email</th>
+                    <th style="width:10%">Contato</th>
+                    <th style="width:10%">Tipo de Contato</th>
+                    <th *ngIf="showAddressFields" style="width:15%">Logradouro</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Número</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Bairro</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Cidade</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Estado</th>
+                    <th *ngIf="showAddressFields" style="width:10%">CEP</th>
+                    <th *ngIf="showAddressFields" style="width:10%">Complemento</th>
+                </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-supplier let-editing="editing" let-ri="rowIndex">
+                <tr [pEditableRow]="supplier">
+                    <td>
+                        <div class="flex align-items-center justify-content-center gap-2">
+                            <button *ngIf="!editing" pButton pRipple type="button" pInitEditableRow icon="pi pi-pencil"
+                                (click)="onRowEditInit(supplier)" class="p-button-rounded p-button-text">
+                            </button>
+                            <button *ngIf="editing" pButton pRipple type="button" pSaveEditableRow icon="pi pi-check"
+                                (click)="onRowEditSave(supplier)"
+                                class="p-button-rounded p-button-text p-button-success">
+                            </button>
+                            <button *ngIf="editing" pButton pRipple type="button" pCancelEditableRow icon="pi pi-times"
+                                (click)="onRowEditCancel(supplier, ri)"
+                                class="p-button-rounded p-button-text p-button-danger">
+                            </button>
+                            <button *ngIf="!editing" pButton pRipple type="button" icon="pi pi-trash"
+                                (click)="onDelete(supplier)" class="p-button-rounded p-button-text p-button-danger">
+                            </button>
+                        </div>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.company_name"
+                                    placeholder="Nome da Empresa" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.company_name }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.type_company"
+                                    placeholder="Tipo da Empresa" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.type_company }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.cnpj_cpf" placeholder="CNPJ/CPF" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.cnpj_cpf }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="email" [(ngModel)]="supplier.email" placeholder="Email" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.email }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.contact" placeholder="Contato" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.contact }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.contact_type" placeholder="Tipo de Contato"/>
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.contact_type }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.logradouro"
+                                    placeholder="Logradouro" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.logradouro }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.numero"
+                                    placeholder="Número" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.numero }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.bairro"
+                                    placeholder="Bairro" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.bairro }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.cidade"
+                                    placeholder="Cidade" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.cidade }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.estado"
+                                    placeholder="Estado" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.estado }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <p-inputMask [(ngModel)]="supplier.address.cep" mask="99999-999" placeholder="CEP" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.cep }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                    <td *ngIf="showAddressFields">
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="text" [(ngModel)]="supplier.address.complemento"
+                                    placeholder="Complemento" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ supplier.address?.complemento }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
+                </tr>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+
+<p-dialog header="CADASTRAR FORNECEDOR" [(visible)]="isDialogOpen" [modal]="true" [closable]="false"
+    [maximizable]="true" [draggable]="false" [resizable]="false">
+    <form>
+        <div class="form-grid">
+            <p-floatLabel>
+                <input id="company_name" type="text" pInputText [(ngModel)]="newSupplier.company_name"
+                    name="company_name" />
+                <label for="company_name">Nome da Empresa</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="type_company" type="text" pInputText [(ngModel)]="newSupplier.type_company"
+                    name="type_company" />
+                <label for="type_company">Tipo da Empresa</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-dropdown id="document_type" [(ngModel)]="selectedDocumentType" [options]="documentTypes"
+                    name="document_type" (onChange)="updateDocumentMask()" placeholder="Tipo de documento"
+                    [style]="{ width: '100%' }" >
+                </p-dropdown>
+                <label for="document_type">Tipo de Documento</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="cnpj_cpf" [(ngModel)]="newSupplier.cnpj_cpf" [mask]="documentMask"
+                    placeholder="Insira o documento" name="cnpj_cpf" />
+                <label for="cnpj_cpf">{{ selectedDocumentType === 'CPF' ? 'CPF' : 'CNPJ' }}</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="email" type="email" pInputText [(ngModel)]="newSupplier.email" name="email" />
+                <label for="email">Email</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="contact" [(ngModel)]="newSupplier.contact" mask="(99) 99999-9999"
+                    placeholder="(XX) XXXXX-XXXX" name="contact" />
+                <label for="contact">Telefone</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="contact_type" type="text" pInputText [(ngModel)]="newSupplier.contact_type"
+                    name="contact_type" />
+                <label for="contact_type">Tipo de Contato</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <p-inputMask id="cep" [(ngModel)]="newSupplier.cep" mask="99999-999" placeholder="XXXXX-XXX" name="cep"
+                    (onComplete)="searchAddress()" />
+                <label for="cep">CEP</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="logradouro" type="text" pInputText [(ngModel)]="newSupplier.logradouro" name="logradouro" />
+                <label for="logradouro">Logradouro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="numero" type="text" pInputText [(ngModel)]="newSupplier.numero" name="numero" />
+                <label for="numero">Número</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="bairro" type="text" pInputText [(ngModel)]="newSupplier.bairro" name="bairro" />
+                <label for="bairro">Bairro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="cidade" type="text" pInputText [(ngModel)]="newSupplier.cidade" name="cidade" />
+                <label for="cidade">Cidade</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="estado" type="text" pInputText [(ngModel)]="newSupplier.estado" name="estado" />
+                <label for="estado">Estado</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="complemento" type="text" pInputText [(ngModel)]="newSupplier.complemento"
+                    name="complemento" />
+                <label for="complemento">Complemento</label>
+            </p-floatLabel>
+        </div>
+        <div class="dialog-footer">
+            <button pButton icon="pi pi-check" label="Salvar" class="p-button-primary"
+                (click)="createSupplier()"></button>
+            <button pButton icon="pi pi-times" label="Cancelar" class="p-button-secondary"
+                (click)="closeDialog()"></button>
+        </div>
+    </form>
+</p-dialog>
+
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s" />
+    <p class="loading-text">Por favor, aguarde. Estamos salvando os dados inseridos.</p>
+</div>

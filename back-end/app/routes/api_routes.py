@@ -4,7 +4,7 @@ from app.controllers.user_controller import create_user_logic, get_user_logic, g
 from app.controllers.person_controller import create_person_logic, get_person_logic, get_all_persons_logic, update_person_logic, delete_person_logic
 from app.controllers.product_controller import create_product_logic, get_product_logic, get_all_products_logic, update_product_logic, delete_product_logic
 from app.controllers.supplier_controller import create_supplier_logic, get_supplier_logic, get_all_suppliers_logic, update_supplier_logic, delete_supplier_logic
-from app.controllers.stock_controller import create_stock_logic, get_stock_logic, update_stock_logic, delete_stock_logic
+from app.controllers.stock_controller import create_stock_logic, get_stock_logic, get_all_stock_logic, update_stock_logic, delete_stock_logic
 from app.controllers.order_controller import create_order_logic, get_order_logic, get_all_orders_logic, update_order_logic
 
 api_bp = Blueprint('api', __name__)
@@ -119,8 +119,7 @@ def supplier_handler(id=None):
             response, status = get_supplier_logic(id)
             return jsonify(response), status
         else:
-            realm = request.args.get('realm')
-            response, status = get_all_suppliers_logic(realm)
+            response, status = get_all_suppliers_logic()
             return jsonify(response), status
 
     elif request.method == 'PUT':
@@ -144,6 +143,9 @@ def stock_handler(id=None):
     elif request.method == 'GET':
         if id is not None:
             response, status = get_stock_logic(id)
+            return jsonify(response), status
+        else:
+            response, status = get_all_stock_logic()
             return jsonify(response), status
 
     elif request.method == 'PUT':

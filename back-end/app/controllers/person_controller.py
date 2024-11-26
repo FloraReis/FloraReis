@@ -52,6 +52,8 @@ def update_person_logic(id, data):
     if not person:
         return {"error": "Person not found"}, 404
     
+    data.pop('id', None)
+    
     try:
         updated_data = PersonSchema(partial=True).load(data)
         address_data = updated_data.pop('address', None)

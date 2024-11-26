@@ -1,0 +1,122 @@
+.auth-wrapper {
+    transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.auth-wrapper.sidebar-open {
+    margin-left: 205px;
+}
+
+.auth-wrapper.sidebar-closed {
+    margin-left: 85px;
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 100%;
+    background-color: #ffffff;
+    padding: 14px;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.22);
+}
+
+h2 {
+    text-align: center;
+    text-transform: uppercase;
+    font-weight: 400;
+}
+
+.dynamic-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+p-table {
+    table {
+        width: 100%;
+        height: calc(100% - 20px);
+        table-layout: fixed;
+    }
+
+    th,
+    td {
+        letter-spacing: 0.5px;
+        padding: 5px;
+        word-wrap: break-word;
+        white-space: nowrap;
+        overflow: hidden;
+        text-align: center;
+        text-overflow: ellipsis;
+        font-family: "Kanit", sans-serif;
+    }
+
+    th {
+        background-color: #f4f4f4;
+        font-weight: 500;
+        font-size: 14px;
+        text-transform: uppercase;
+    }
+
+    td {
+        font-size: 14px;
+    }
+
+}
+
+.p-button.p-button-icon-only {
+    width: 2.357rem;
+    padding: 0.5rem 0;
+    margin-right: 10px;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+
+    p-floatLabel {
+        width: 100%;
+        margin-top: 20px;
+    }
+}
+
+
+.dialog-footer {
+    margin-top: 50px;
+
+    button {
+        margin-right: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .auth-wrapper {
+        margin-left: 80px;
+    }
+
+    .auth-container {
+        padding: 15px;
+        width: 90%;
+    }
+}
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.loading-overlay p-progressSpinner {
+    width: 80px;
+    height: 80px;
+    color: #6a8a52;
+}

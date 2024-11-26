@@ -9,7 +9,7 @@ class Address(db.Model):
     bairro = db.Column(db.String(50), nullable=False)
     cidade = db.Column(db.String(50), nullable=False)
     estado = db.Column(db.String(2), nullable=False)
-    cep = db.Column(db.String(8), nullable=False)
+    cep = db.Column(db.String(9), nullable=False)
     numero = db.Column(db.String(10), nullable=True)
     complemento = db.Column(db.String(100), nullable=True)
 

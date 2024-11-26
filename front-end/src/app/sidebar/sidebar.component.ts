@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+
 import { AvatarModule } from 'primeng/avatar';
+
+import { SidebarService } from '../services/sidebar.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -11,7 +14,6 @@ import { AvatarModule } from 'primeng/avatar';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-
   isSidebarOpen = true;
   loggedInUser = 'Usuário';
 
@@ -22,10 +24,16 @@ export class SidebarComponent {
     { label: 'Estoque', icon: 'pi pi-box', route: '/stock' },
   ];
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private sidebarService: SidebarService) {}
+
+  ngOnInit() {
+    this.sidebarService.isSidebarOpen$.subscribe(
+      (state) => (this.isSidebarOpen = state)
+    );
+  }
 
   toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    this.sidebarService.toggleSidebar();
   }
 
   navigate(route: string) {

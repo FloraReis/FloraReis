@@ -32,6 +32,8 @@ def update_product_logic(id, data):
     product = Product.query.get(id)
     if not product:
         return {"error": "Product not found"}, 404
+    
+    data.pop('id', None)
 
     try:
         updated_data = ProductSchema(partial=True).load(data)

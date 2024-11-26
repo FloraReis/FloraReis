@@ -1,44 +1,43 @@
 <div class="sidebar" [ngClass]="{ closed: !isSidebarOpen }">
 
-    <div class="header">
-      <p-avatar label="U" styleClass="mr-2" size="normal" (click)="toggleSidebar()"
+  <div class="header">
+    <p-avatar label="U" styleClass="mr-2" size="normal" (click)="toggleSidebar()"
       [style]="{ 'background-color': '#7b0339', color: '#fffff', 'font-weight': 'bold', 'font-size': '18px', 'cursor': 'pointer' }" />
-      <span *ngIf="isSidebarOpen">{{ loggedInUser }}</span>
-    </div>
-
-    <div class="menu">
-      <h4 class="category-title" *ngIf="isSidebarOpen">Cadastro</h4>
-      <ul>
-        <li *ngFor="let item of menuItems" (click)="navigate(item.route)">
-          <i [class]="item.icon"></i>
-          <span *ngIf="isSidebarOpen">{{ item.label }}</span>
-        </li>
-      </ul>
-  
-      <h4 class="category-title" *ngIf="isSidebarOpen">Lançamento</h4>
-      <ul>
-        <li>
-          <i class="pi pi-list-check"></i>
-          <span *ngIf="isSidebarOpen">Pedidos</span>
-        </li>
-      </ul>
-  
-      <h4 class="category-title" *ngIf="isSidebarOpen">Relatórios</h4>
-      <ul>
-        <li>
-          <i class="pi pi-chart-line"></i>
-          <span *ngIf="isSidebarOpen">Estoque</span>
-        </li>
-        <li>
-          <i class="pi pi-chart-bar"></i>
-          <span *ngIf="isSidebarOpen">Pedidos</span>
-        </li>
-      </ul>
-    </div>
-  
-    <div class="logout" (click)="logout()">
-      <i class="pi pi-sign-out"></i>
-      <span *ngIf="isSidebarOpen">Sair</span>
-    </div>
+    <span *ngIf="isSidebarOpen">{{ loggedInUser }}</span>
   </div>
-  
+
+  <div class="menu">
+    <h4 class="category-title" *ngIf="isSidebarOpen">Cadastro</h4>
+    <ul>
+      <li *ngFor="let item of menuItems" (click)="navigate(item.route)">
+        <i [class]="item.icon"></i>
+        <span *ngIf="isSidebarOpen">{{ item.label }}</span>
+      </li>
+    </ul>
+
+    <h4 class="category-title" *ngIf="isSidebarOpen">Lançamento</h4>
+    <ul>
+      <li>
+        <i class="pi pi-list-check"></i>
+        <span *ngIf="isSidebarOpen">Pedidos</span>
+      </li>
+    </ul>
+
+    <h4 class="category-title" *ngIf="isSidebarOpen">Relatórios</h4>
+    <ul>
+      <li>
+        <i class="pi pi-chart-line"></i>
+        <span *ngIf="isSidebarOpen">Estoque</span>
+      </li>
+      <li>
+        <i class="pi pi-chart-bar"></i>
+        <span *ngIf="isSidebarOpen">Pedidos</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="logout" (click)="logout()">
+    <i class="pi pi-sign-out"></i>
+    <span *ngIf="isSidebarOpen">Sair</span>
+  </div>
+</div>
