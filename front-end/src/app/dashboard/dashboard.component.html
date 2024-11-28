@@ -1,1 +1,196 @@
-<router-outlet></router-outlet>
+<div class="dashboard-wrapper" [ngClass]="{ 'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen }">
+    <div class="dashboard-container">
+        <div class="dashboard-grid">
+            <div class="dashboard-section" id="order-stats">
+                <div class="section-header">
+                    <h3>Metricas</h3>
+                </div>
+                <div class="stats-metrics">
+                    <ng-container *ngFor="let meterItem of meterItems">
+                        <p-card class="metric-card">
+                            <div>
+                                <div class="card-info">
+                                    <div class="metric-icon" [style.background-color]="meterItem.color1">
+                                        <i [class]="meterItem.icon"></i>
+                                    </div>
+                                    <span class="metric-label">{{ meterItem.label }}</span>
+                                    <span class="metric-value">{{ meterItem.value | number: '1.0-2' }}%</span>
+                                </div>
+                            </div>
+                        </p-card>
+                    </ng-container>
+                </div>
+            </div>
+
+            <p-toast />
+
+            <div class="dashboard-section expanded-orders-list" id="orders-list">
+                <div class="section-header">
+                    <h3>Pedidos</h3>
+                    <div class="header-actions">
+                        <button pButton icon="pi pi-plus" [rounded]="true" class="p-button-success" (click)="openCreateDialog()">
+                        </button>
+                        <button pButton icon="pi pi-filter" [rounded]="true" class="p-button-secondary" (click)="openFilterDialog()">
+                        </button>
+                    </div>
+                </div>
+                <div class="order-list">
+                    <div *ngFor="let order of orders" class="order-item">
+                        <div class="order-header">
+                            <div class="order-info">
+                                <h4>{{ order.person?.full_name || 'Sem nome' }}</h4>
+                                <p>Data de Entrega: {{ order.delivery_date | date: 'dd/MM/yyyy' || 'Sem data' }}</p>
+                                <p>Status: {{order.status === 'C' ? 'Concluído' : 'P' ? 'Pendente' : 'Em analise'}}</p>
+                            </div>
+                            <div class="order-actions">
+                                <button *ngIf="expandedOrder !== order && order.status !== 'C'" pButton icon="pi pi-check" class="p-button-success" [rounded]="true"
+                                    [text]="true" pTooltip="Concluir Entrega" tooltipPosition="bottom"
+                                    (click)="confirmConcludeOrder(order)">
+                                </button>
+                                <button pButton [icon]="expandedOrder === order ? 'pi pi-angle-up' : 'pi pi-angle-down'"
+                                    class="p-button-secondary" [rounded]="true" [text]="true" pTooltip="Detalhes"
+                                    tooltipPosition="bottom" (click)="showOrderDetails(order)">
+                                </button>
+                            </div>
+                        </div>
+                        <div class="order-details" *ngIf="expandedOrder === order"
+                            [ngClass]="{'expand-animation': expandedOrder === order}">
+                            <h5>Itens do Pedido:</h5>
+                            <p class="order-items-list" *ngFor="let item of order.items">
+                                <strong>Produto:</strong> {{ item.product.name }} /
+                                <strong>Quantidade:</strong> {{ item.quantity }} /
+                                <strong>Preço total:</strong> {{ item.total_price | currency }}
+                            </p>
+                            <hr />
+                            <h5>Endereço de Entrega:</h5>
+                            <p>
+                                <strong> CEP: </strong> {{ order.delivery_address.cep }} <br>
+                                {{ order.delivery_address.logradouro }}, {{ order.delivery_address.numero }}
+                                {{ order.delivery_address.bairro }} (
+                                <strong> Complemento: </strong> {{ order.delivery_address.complemento || '-'}}) -
+                                {{ order.delivery_address.cidade }} /
+                                {{ order.delivery_address.estado }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<p-dialog [(visible)]="createDialogVisible" header="LANÇAR PEDIDO" [modal]="true" [closable]="true"
+    [style]="{ width: '1000px', height: '900px' }">
+    <form>
+        <div class="form-grid">
+            <p-floatLabel>
+                <p-dropdown id="person_id" [(ngModel)]="newOrder.person_id" [options]="persons" name="person_id"
+                    placeholder="Selecione um cliente" [style]="{ width: '100%' }">
+                </p-dropdown>
+                <label for="person_id">Cliente</label>
+            </p-floatLabel>
+
+            <p-floatLabel>
+                <p-inputMask id="delivery_date" [(ngModel)]="newOrder.delivery_date" name="delivery_date"
+                    mask="99/99/9999" placeholder="DD/MM/AAAA" [style]="{ width: '100%' }">
+                </p-inputMask>
+                <label for="delivery_date">Data de Entrega</label>
+            </p-floatLabel>
+        </div>
+
+        <h4>Endereço de Entrega</h4>
+        <div class="grid-cols-3">
+            <p-floatLabel>
+                <p-inputMask id="cep" [(ngModel)]="newOrder.delivery_address.cep" name="cep" mask="99999-999"
+                    placeholder="XXXXX-XXX" (onComplete)="searchAddress()" />
+                <label for="cep">CEP</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="logradouro" type="text" pInputText [(ngModel)]="newOrder.delivery_address.logradouro"
+                    name="logradouro" />
+                <label for="logradouro">Logradouro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="numero" type="text" pInputText [(ngModel)]="newOrder.delivery_address.numero"
+                    name="numero" />
+                <label for="numero">Número</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="bairro" type="text" pInputText [(ngModel)]="newOrder.delivery_address.bairro"
+                    name="bairro" />
+                <label for="bairro">Bairro</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="cidade" type="text" pInputText [(ngModel)]="newOrder.delivery_address.cidade"
+                    name="cidade" />
+                <label for="cidade">Cidade</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="estado" type="text" pInputText [(ngModel)]="newOrder.delivery_address.estado"
+                    name="estado" />
+                <label for="estado">Estado</label>
+            </p-floatLabel>
+            <p-floatLabel>
+                <input id="complemento" type="text" pInputText [(ngModel)]="newOrder.delivery_address.complemento"
+                    name="complemento" />
+                <label for="complemento">Complemento</label>
+            </p-floatLabel>
+        </div>
+
+        <h4>Itens do Pedido</h4>
+        <div class="items-grid">
+            <div *ngFor="let item of newOrder.items; let i = index" class="item-row">
+                <div class="item-row">
+                    <p-floatLabel>
+                        <p-dropdown [options]="products" [(ngModel)]="item.product_id" name="product_id"
+                            [style]="{ width: '100%' }"></p-dropdown>
+                        <label for="product_id">Produto</label>
+                    </p-floatLabel>
+                    <p-floatLabel>
+                        <input id="quantity" type="number" pInputText [(ngModel)]="item.quantity" name="quantity"
+                            (input)="calculateTotal()" />
+                        <label for="quantity">Quantidade</label>
+                    </p-floatLabel>
+                    <p-floatLabel>
+                        <input id="price_per_unit" type="number" pInputText [(ngModel)]="item.price_per_unit"
+                            name="price_per_unit" (input)="calculateTotal()" />
+                        <label for="price_per_unit">Preço Unitário</label>
+                    </p-floatLabel>
+                    <p>
+                        <span>Total: {{ item.quantity * item.price_per_unit | currency:'BRL' }}</span>
+                    </p>
+                    <button pButton type="button" icon="pi pi-trash" [rounded]="true" [text]="true"
+                        class="p-button-danger p-button-rounded" (click)="removeItem(i)">
+                    </button>
+                </div>
+            </div>
+            <button pButton type="button" icon="pi pi-plus" [rounded]="true" [text]="true" class="p-button-secondary"
+                (click)="addItem()">
+            </button>
+        </div>
+    </form>
+    <p-footer>
+        <button pButton label="Salvar" icon="pi pi-check" (click)="createOrder()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" (click)="closeCreateDialog()"
+            class="p-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
+<p-dialog [(visible)]="filterDialogVisible" header="Filtrar Pedidos" [modal]="true" [closable]="true"
+    [style]="{ width: '300px' }">
+    <div class="form-grid">
+        <p-floatLabel>
+            <p-inputMask id="search_start_date" [(ngModel)]="search_start_date" name="search_start_date"
+                mask="99/99/9999" placeholder="DD/MM/AAAA" [style]="{ width: '100%' }">
+            </p-inputMask>
+            <label for="search_start_date">Data de pesquisa</label>
+        </p-floatLabel>
+    </div>
+    <p-footer>
+        <button pButton label="Buscar" icon="pi pi-search" (click)="filterOrdersByDate()"></button>
+        <button pButton label="Cancelar" icon="pi pi-times" (click)="closeFilterDialog()"
+            class="p-button-secondary"></button>
+    </p-footer>
+</p-dialog>
+
+<p-confirmDialog></p-confirmDialog>

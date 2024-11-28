@@ -53,8 +53,9 @@ export class StockComponent {
   isLoading = false;
 
   newStock = {
-    product_id: null,
-    quantity: null,
+    product_id: '',
+    quantity: '',
+    price_per_unit: ''
   };
 
   constructor(
@@ -73,12 +74,15 @@ export class StockComponent {
   }
 
   fetchAllStocks() {
+    this.isLoading = true;
     this.stockService.getAllStocks().subscribe({
       next: (data) => {
         this.stocks = data;
+        this.isLoading = false;
       },
       error: (err) => {
         this.messageService.add({ severity: 'error', summary: 'Erro', detail: 'Erro ao buscar estoques.' });
+        this.isLoading = false;
       },
     });
   }
@@ -150,8 +154,9 @@ export class StockComponent {
   closeDialog() {
     this.isDialogOpen = false;
     this.newStock = {
-      product_id: null,
-      quantity: null,
+      product_id: '',
+      quantity: '',
+      price_per_unit: ''
     };
   }
 
@@ -160,9 +165,12 @@ export class StockComponent {
       return;
     }
 
+    const formattedPrice = this.newStock.price_per_unit?.toString().replace(',', '.');
+
     const payload = {
       product_id: this.newStock.product_id,
       quantity: this.newStock.quantity,
+      price_per_unit: parseFloat(formattedPrice)
     };
 
     this.closeDialog();
@@ -219,6 +227,7 @@ export class StockComponent {
     const tableData = this.stocks.map(stock => ({
       'Produto': stock.product?.name || 'N/A',
       'Quantidade': stock.quantity,
+      'Preço por unidade': stock.price_per_unit,
       'Última Atualização': stock.last_updated ? new Date(stock.last_updated).toLocaleDateString('pt-BR') + ' ' + new Date(stock.last_updated).toLocaleTimeString('pt-BR') : 'N/A',
     }));
   

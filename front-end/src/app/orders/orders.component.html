@@ -1,0 +1,95 @@
+<p-dialog header="Criar Pedido" [(visible)]="isDialogOpen" [modal]="true" [closable]="false" [maximizable]="true"
+          [draggable]="false" [resizable]="false" [style]="{ width: '800px' }">
+  <form>
+    <!-- Seção do cliente -->
+    <div class="form-grid">
+      <p-floatLabel>
+        <p-dropdown id="person_id" [(ngModel)]="newOrder.person_id" [options]="person" name="person_id"
+                    optionLabel="full_name" placeholder="Selecione um cliente" [style]="{ width: '100%' }">
+        </p-dropdown>
+        <label for="person_id">Cliente</label>
+      </p-floatLabel>
+
+      <p-floatLabel>
+        <p-calendar id="delivery_date" [(ngModel)]="newOrder.delivery_date" name="delivery_date"
+                    placeholder="Selecione a data de entrega" dateFormat="dd/mm/yy" [style]="{ width: '100%' }">
+        </p-calendar>
+        <label for="delivery_date">Data de Entrega</label>
+      </p-floatLabel>
+    </div>
+
+    <!-- Seção de endereço -->
+    <h4>Endereço de Entrega</h4>
+    <div class="form-grid">
+      <p-floatLabel>
+        <input id="logradouro" type="text" pInputText [(ngModel)]="newOrder.delivery_address.logradouro"
+               name="logradouro" />
+        <label for="logradouro">Logradouro</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <input id="numero" type="text" pInputText [(ngModel)]="newOrder.delivery_address.numero" name="numero" />
+        <label for="numero">Número</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <input id="bairro" type="text" pInputText [(ngModel)]="newOrder.delivery_address.bairro" name="bairro" />
+        <label for="bairro">Bairro</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <input id="cidade" type="text" pInputText [(ngModel)]="newOrder.delivery_address.cidade" name="cidade" />
+        <label for="cidade">Cidade</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <input id="estado" type="text" pInputText [(ngModel)]="newOrder.delivery_address.estado" name="estado" />
+        <label for="estado">Estado</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <p-inputMask id="cep" [(ngModel)]="newOrder.delivery_address.cep" name="cep" mask="99999-999"
+                     placeholder="XXXXX-XXX" />
+        <label for="cep">CEP</label>
+      </p-floatLabel>
+      <p-floatLabel>
+        <input id="complemento" type="text" pInputText [(ngModel)]="newOrder.delivery_address.complemento"
+               name="complemento" />
+        <label for="complemento">Complemento</label>
+      </p-floatLabel>
+    </div>
+
+    <!-- Seção de itens -->
+    <h4>Itens do Pedido</h4>
+    <div class="items-grid">
+      <div *ngFor="let item of newOrder.items; let i = index">
+        <div class="item-row">
+          <p-floatLabel>
+            <p-dropdown [options]="products" [(ngModel)]="item.product_id" optionLabel="name" name="product_id"
+                        placeholder="Selecione o produto">
+            </p-dropdown>
+            <label for="product_id">Produto</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input id="quantity" type="number" pInputText [(ngModel)]="item.quantity" name="quantity"
+                   placeholder="Quantidade" (input)="calculateTotal()" />
+            <label for="quantity">Quantidade</label>
+          </p-floatLabel>
+          <p-floatLabel>
+            <input id="price_per_unit" type="number" pInputText [(ngModel)]="item.price_per_unit" name="price_per_unit"
+                   placeholder="Preço Unitário" (input)="calculateTotal()" />
+            <label for="price_per_unit">Preço Unitário</label>
+          </p-floatLabel>
+          <p>
+            <span>Total: {{ item.quantity * item.price_per_unit | currency:'BRL' }}</span>
+          </p>
+          <button pButton type="button" icon="pi pi-trash" class="p-button-danger p-button-rounded"
+                  (click)="removeItem(i)"></button>
+        </div>
+      </div>
+      <button pButton type="button" label="Adicionar Item" icon="pi pi-plus" class="p-button-secondary"
+              (click)="addItem()"></button>
+    </div>
+
+    <!-- Botões -->
+    <div class="dialog-footer">
+      <button pButton icon="pi pi-check" label="Salvar" class="p-button-primary" (click)="createOrder()"></button>
+      <button pButton icon="pi pi-times" label="Cancelar" class="p-button-secondary" (click)="closeDialog()"></button>
+    </div>
+  </form>
+</p-dialog>

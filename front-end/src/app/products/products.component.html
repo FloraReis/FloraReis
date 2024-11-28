@@ -23,12 +23,10 @@
             <ng-template pTemplate="header">
                 <tr>
                     <th style="width:10%">Ações</th>
-                    <th style="width:10%">Nome</th>
+                    <th style="width:30%">Nome</th>
                     <th style="width:30%">Descrição</th>
                     <th style="width:10%">Tipo</th>
-                    <th style="width:10%">Código</th>
-                    <th style="width:10%">Preço</th>
-                    <th style="width:10%">Estoque</th>
+                    <th style="width:30%">Código</th>
                     <th style="width:30%">Fornecedor</th>
                 </tr>
             </ng-template>
@@ -96,27 +94,6 @@
                     <td>
                         <p-cellEditor>
                             <ng-template pTemplate="input">
-                                <input pInputText type="number" [(ngModel)]="product.price" placeholder="Preço" />
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{ product.price | currency:'BRL' }}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-                    <td>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
-                                <input pInputText type="number" [(ngModel)]="product.quantity_in_stock"
-                                    placeholder="Estoque" />
-                            </ng-template>
-                            <ng-template pTemplate="output">
-                                {{ product.quantity_in_stock }}
-                            </ng-template>
-                        </p-cellEditor>
-                    </td>
-                    <td>
-                        <p-cellEditor>
-                            <ng-template pTemplate="input">
                                 <p-dropdown [options]="suppliers" [(ngModel)]="product.supplier_id"
                                     placeholder="Selecione o fornecedor"></p-dropdown>
                             </ng-template>
@@ -154,15 +131,6 @@
                 <label for="product_code">Código</label>
             </p-floatLabel>
             <p-floatLabel>
-                <input id="price" type="number" pInputText [(ngModel)]="newProduct.price" name="price" />
-                <label for="price">Preço</label>
-            </p-floatLabel>
-            <p-floatLabel>
-                <input id="quantity_in_stock" type="number" pInputText [(ngModel)]="newProduct.quantity_in_stock"
-                    name="quantity_in_stock" />
-                <label for="quantity_in_stock">Estoque</label>
-            </p-floatLabel>
-            <p-floatLabel>
                 <p-dropdown id="supplier_id" [(ngModel)]="newProduct.supplier_id" [options]="suppliers"
                     name="supplier_id" placeholder="Selecione o fornecedor" [style]="{'min-width': '150px', 'width': '200px'}">
                 </p-dropdown>
@@ -181,5 +149,4 @@
 <div *ngIf="isLoading" class="loading-overlay">
     <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
         animationDuration=".5s"></p-progressSpinner>
-    <p class="loading-text">Por favor, aguarde. Estamos salvando os dados inseridos.</p>
 </div>

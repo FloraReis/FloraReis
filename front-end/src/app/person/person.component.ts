@@ -78,12 +78,15 @@ export class PersonComponent {
   }
 
   fetchAllPersons() {
+    this.isLoading = true;
     this.personService.getAllPersons().subscribe({
       next: (data) => {
         this.people = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao buscar pessoas:', err);
+        this.isLoading = false;
       },
     });
   }

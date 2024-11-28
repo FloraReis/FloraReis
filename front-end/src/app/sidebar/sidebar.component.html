@@ -7,6 +7,15 @@
   </div>
 
   <div class="menu">
+
+    <h4 class="category-title" *ngIf="isSidebarOpen">Tela inicial</h4>
+    <ul>
+      <li *ngFor="let item of homeItems" (click)="navigate(item.route)">
+        <i [class]="item.icon"></i>
+        <span *ngIf="isSidebarOpen">{{ item.label }}</span>
+      </li>
+    </ul>
+
     <h4 class="category-title" *ngIf="isSidebarOpen">Cadastro</h4>
     <ul>
       <li *ngFor="let item of menuItems" (click)="navigate(item.route)">
@@ -15,23 +24,11 @@
       </li>
     </ul>
 
-    <h4 class="category-title" *ngIf="isSidebarOpen">Lançamento</h4>
-    <ul>
-      <li>
-        <i class="pi pi-list-check"></i>
-        <span *ngIf="isSidebarOpen">Pedidos</span>
-      </li>
-    </ul>
-
     <h4 class="category-title" *ngIf="isSidebarOpen">Relatórios</h4>
     <ul>
-      <li>
-        <i class="pi pi-chart-line"></i>
-        <span *ngIf="isSidebarOpen">Estoque</span>
-      </li>
-      <li>
-        <i class="pi pi-chart-bar"></i>
-        <span *ngIf="isSidebarOpen">Pedidos</span>
+      <li *ngFor="let item of reportsItems" (click)="navigate(item.route)">
+        <i  [class]="item.icon"></i>
+        <span *ngIf="isSidebarOpen">Relatórios</span>
       </li>
     </ul>
   </div>

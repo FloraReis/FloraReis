@@ -7,6 +7,7 @@ import { ProductsComponent } from './products/products.component';
 import { PersonComponent } from './person/person.component';
 import { SuppliersComponent } from './suppliers/suppliers.component';
 import { StockComponent } from './stock/stock.component';
+import { ReportsComponent } from './reports/reports.component';
 
 export const routes: Routes = [
     { path: '', component: AppComponent, pathMatch: 'full' },
@@ -17,4 +18,5 @@ export const routes: Routes = [
     { path: 'person', component: PersonComponent },
     { path: 'suppliers', component: SuppliersComponent },
     { path: 'stock', component: StockComponent },
+    { path: 'reports', component: ReportsComponent },
 ];

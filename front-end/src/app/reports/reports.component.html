@@ -1,0 +1,28 @@
+<div class="dashboard-wrapper" [ngClass]="{ 'sidebar-open': isSidebarOpen, 'sidebar-closed': !isSidebarOpen }">
+    <div class="dashboard-container">
+      <div class="dashboard-grid">
+        <div class="report-card">
+          <h3>Relatório de Estoque</h3>
+          <p>Gere relatórios de estoque com base na data selecionada.</p>
+          <div class="form-group">
+            <p-floatLabel>
+              <p-inputMask id="stock_date" [(ngModel)]="stockDate" mask="99/99/9999" placeholder="DD/MM/AAAA"></p-inputMask>
+            </p-floatLabel>
+          </div>
+          <button pButton type="button" icon="pi pi-download" label="Gerar Relatório" class="p-button-success" (click)="generateStockReport()"></button>
+        </div>
+  
+        <div class="report-card">
+          <h3>Relatório de Produtos</h3>
+          <p>Gere relatórios de produtos com base na data selecionada.</p>
+          <div class="form-group">
+            <p-floatLabel>
+              <p-inputMask id="product_date" [(ngModel)]="productDate" mask="99/99/9999" placeholder="DD/MM/AAAA"></p-inputMask>
+            </p-floatLabel>
+          </div>
+          <button pButton type="button" icon="pi pi-download" label="Gerar Relatório" class="p-button-success" (click)="generateProductReport()"></button>
+        </div>
+      </div>
+    </div>
+  </div>
+<p-toast></p-toast>

@@ -59,8 +59,6 @@ export class ProductsComponent {
     description: '',
     type: '',
     product_code: '',
-    price: '',
-    quantity_in_stock: null,
     supplier_id: null,
   };
 
@@ -83,12 +81,15 @@ export class ProductsComponent {
   }
 
   fetchAllProducts() {
+    this.isLoading = true;
     this.productService.getAllProducts().subscribe({
       next: (data) => {
         this.products = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao buscar produtos:', err);
+        this.isLoading = false;
       },
     });
   }
@@ -173,22 +174,17 @@ export class ProductsComponent {
       description: '',
       type: '',
       product_code: '',
-      price: '',
-      quantity_in_stock: null,
       supplier_id: null,
     };
   }
 
   createProduct() {
-    const formattedPrice = this.newProduct.price?.toString().replace(',', '.');
 
     const productPayload = {
       name: this.newProduct.name,
       description: this.newProduct.description,
       type: this.newProduct.type,
       product_code: this.newProduct.product_code,
-      price: parseFloat(formattedPrice),
-      quantity_in_stock: this.newProduct.quantity_in_stock,
       supplier_id: this.newProduct.supplier_id,
     };
 

@@ -24,6 +24,14 @@ export class SidebarComponent {
     { label: 'Estoque', icon: 'pi pi-box', route: '/stock' },
   ];
 
+  homeItems = [
+    { label: 'Dashboard', icon: 'pi pi-warehouse', route: '/dashboard'}
+  ];
+
+  reportsItems = [
+    { label: 'Relatorios', icon: 'pi pi-chart-line', route: '/reports'}
+  ];
+
   constructor(private router: Router, private sidebarService: SidebarService) {}
 
   ngOnInit() {

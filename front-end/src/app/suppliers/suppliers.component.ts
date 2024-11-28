@@ -94,12 +94,15 @@ export class SuppliersComponent {
   }
 
   fetchAllSuppliers() {
+    this.isLoading = true;
     this.supplierService.getAllSuppliers().subscribe({
       next: (data) => {
         this.suppliers = data;
+        this.isLoading = false;
       },
       error: (err) => {
         console.error('Erro ao buscar pessoas:', err);
+        this.isLoading = false;
       },
     });
   }

@@ -25,6 +25,7 @@
                     <th style="width:10%">Ações</th>
                     <th style="width:30%">Produto</th>
                     <th style="width:30%">Quantidade</th>
+                    <th style="width:30%">Preço por unidade</th>
                     <th style="width:30%">Última Atualização</th>
                 </tr>
             </ng-template>
@@ -59,6 +60,16 @@
                             </ng-template>
                         </p-cellEditor>
                     </td>
+                    <td>
+                        <p-cellEditor>
+                            <ng-template pTemplate="input">
+                                <input pInputText type="number" [(ngModel)]="stock.price_per_unit" placeholder="Preço" />
+                            </ng-template>
+                            <ng-template pTemplate="output">
+                                {{ stock.price_per_unit | currency:'BRL' }}
+                            </ng-template>
+                        </p-cellEditor>
+                    </td>
                     <td>{{ stock.last_updated | date: 'dd/MM/yyyy HH:mm' }}</td>
                 </tr>
             </ng-template>
@@ -78,6 +89,10 @@
                     <input id="quantity" type="number" pInputText [(ngModel)]="newStock.quantity" name="quantity" />
                     <label for="quantity">Quantidade</label>
                 </p-floatLabel>
+                <p-floatLabel>
+                    <input id="price_per_unit" type="number" pInputText [(ngModel)]="newStock.price_per_unit" name="price" />
+                    <label for="price_per_unit">Preço</label>
+                </p-floatLabel>
             </div>
             <div class="dialog-footer">
                 <button pButton icon="pi pi-check" label="Salvar" class="p-button-primary"
@@ -87,4 +102,9 @@
             </div>
         </form>
     </p-dialog>
+</div>
+
+<div *ngIf="isLoading" class="loading-overlay">
+    <p-progressSpinner styleClass="w-4rem h-4rem" strokeWidth="8" fill="var(--surface-ground)"
+        animationDuration=".5s" />
 </div>
