@@ -1,8 +1,12 @@
 from app.models.order_model import Order, db
 from app.models.order_item_model import OrderItem
+from app.models.stock_model import Stock
 from app.models.address_model import Address
 from app.schemas.order_schema import OrderSchema
 from marshmallow import ValidationError
+from flask import request
+from sqlalchemy import and_,func
+from datetime import datetime, timedelta
 
 def create_order_logic(data):
     try:
@@ -22,6 +26,20 @@ def create_order_logic(data):
         db.session.flush()
 
         for item in items_data:
+            stock = Stock.query.filter_by(product_id=item["product_id"]).first()
+
+            if not stock:
+                db.session.rollback()
+                return {"error": f"Produto com ID {item['product_id']} não encontrado"}, 404
+            
+            if stock.quantity < item["quantity"]:
+                db.session.rollback()
+                return {
+                    "error": f"Estoque insuficiente para o produto. Disponível: {stock.quantity}, solicitado: {item['quantity']}"
+                }, 400
+
+            stock.quantity -= item["quantity"]
+
             item["order_id"] = new_order.id
             item["total_price"] = item["quantity"] * item["price_per_unit"]
             order_item = OrderItem(**item)
@@ -49,13 +67,35 @@ def get_order_logic(id):
     return OrderSchema().dump(order), 200
 
 def get_all_orders_logic():
-    orders = Order.query.all()
+    today = datetime.utcnow().date()
+    delivery_date = request.args.get('delivery_date')
+    search_start_date = request.args.get('search_start_date')
+
+    if delivery_date:
+            delivery_date = datetime.strptime(delivery_date, '%Y-%m-%d').date()
+            orders = Order.query.filter(
+                func.date(Order.delivery_date) == delivery_date
+            ).all()
+        
+    elif search_start_date:
+        search_start_date = datetime.strptime(search_start_date, '%Y-%m-%d').date()
+        orders = Order.query.filter(
+            and_(
+                func.date(Order.delivery_date) >= search_start_date,
+                func.date(Order.delivery_date) <= today
+            )).all()
+    
+    else:
+        orders = Order.query
+
     return OrderSchema(many=True).dump(orders), 200
 
 def update_order_logic(id, data):
     order = Order.query.get(id)
     if not order:
         return {"error": "Order not found"}, 404
+    
+    data.pop('id', None)
 
     try:
         updated_data = OrderSchema(partial=True).load(data)

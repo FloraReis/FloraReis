@@ -6,4 +6,5 @@ class StockSchema(Schema):
     product_id = fields.Int(required=True)
     product = fields.Nested(ProductSchema, dump_only=True)
     quantity = fields.Int(required=True)
+    price_per_unit = fields.Float(required=True)
     last_updated = fields.DateTime(dump_only=True)

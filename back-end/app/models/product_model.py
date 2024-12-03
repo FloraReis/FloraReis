@@ -9,9 +9,7 @@ class Product(db.Model):
     description = db.Column(db.String(255), nullable=True)
     type = db.Column(db.String(50), nullable=False)
     product_code = db.Column(db.String(50), unique=True, nullable=False)
-    price = db.Column(db.Float, nullable=False)
-    quantity_in_stock = db.Column(db.Integer, default=0)
-    status = db.Column(db.String(20), default="E")
+    status = db.Column(db.String(20), default="A")
     supplier_id = db.Column(db.Integer, db.ForeignKey('supplier.id'), nullable=False)
     supplier = db.relationship('Supplier')
     

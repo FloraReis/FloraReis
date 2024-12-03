@@ -10,8 +10,10 @@ class OrderSchema(Schema):
     delivery_address = fields.Nested(AddressSchema, required=True)
     status = fields.String(required=True, validate=validate.OneOf(["P", "C", "F"]))
     total_amount = fields.Float(required=True)
-    delivery_date = fields.DateTime(required=False)
+    delivery_date = fields.Date(required=False)
     items = fields.List(fields.Nested(OrderItemSchema), required=True)
 
     date_created = fields.DateTime(dump_only=True)
     date_modified = fields.DateTime(dump_only=True)
+
+    search_start_date = fields.Date(required=False)

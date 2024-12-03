@@ -7,8 +7,6 @@ class ProductSchema(Schema):
     description = fields.String(validate=validate.Length(max=255))
     type = fields.String(required=False)
     product_code = fields.String(required=False)
-    price = fields.Float(required=True)
-    quantity_in_stock = fields.Int(required=True)
     status = fields.String(required=False, validate=validate.Length(max=20))
     supplier_id = fields.Int(required=True, load_only=True)
     supplier = fields.Nested(SupplierSchema, dump_only=True)

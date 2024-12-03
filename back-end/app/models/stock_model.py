@@ -8,6 +8,7 @@ class Stock(db.Model):
     product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
     product = db.relationship('Product')
     quantity = db.Column(db.Integer, nullable=False)
+    price_per_unit = db.Column(db.Float, nullable=False)
     last_updated = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
     def __repr__(self):
